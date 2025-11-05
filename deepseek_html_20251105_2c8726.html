@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAFFELO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Дождь */
+        .rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .drop {
+            position: absolute;
+            top: -20px;
+            width: 1px;
+            height: 20px;
+            background: linear-gradient(to bottom, transparent, #fff, transparent);
+            animation: rainFall linear infinite;
+        }
+
+        @keyframes rainFall {
+            0% {
+                transform: translateY(-100px) rotate(15deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        /* Кнопка фотохостинга */
+        .photo-host-button {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            color: #fff;
+            font-size: 1rem;
+            padding: 1rem 2rem;
+            border: 1px solid #222;
+            border-radius: 6px;
+            transition: all 0.4s ease;
+            background: rgba(10, 10, 10, 0.95);
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .photo-host-button:hover {
+            background: #111;
+            border-color: #444;
+            transform: translateX(-50%) translateY(-3px);
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* Основной контент */
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8rem;
+            animation: titleFloat 4s ease-in-out infinite;
+            text-shadow: 0 0 20px #fff;
+            background: linear-gradient(45deg, #fff, #ccc, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .social-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            border: 1px solid #222;
+            border-radius: 6px;
+            transition: all 0.4s ease;
+            background: rgba(10, 10, 10, 0.95);
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            font-weight: bold;
+        }
+
+        .social-link:hover {
+            background: #111;
+            border-color: #444;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        /* Окно фотохостинга */
+        .photo-host-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .photo-host-modal.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Загрузка фото */
+        .upload-area {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .upload-area:hover {
+            border-color: #666;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-button {
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            margin-top: 1rem;
+        }
+
+        .upload-button:hover {
+            background: #222;
+            border-color: #666;
+        }
+
+        /* Галерея */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .gallery-item {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 100%;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #222;
+            border-color: #666;
+        }
+
+        .delete-btn {
+            background: #300;
+            color: #fff;
+            border: 1px solid #500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .delete-btn:hover {
+            background: #500;
+        }
+
+        /* Оверлей */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <!-- Дождь -->
+    <div class="rain" id="rain"></div>
+    
+    <!-- Кнопка фотохостинга -->
+    <button class="photo-host-button" onclick="openPhotoHost()">Мой фотохостинг</button>
+    
+    <!-- Основной контент -->
+    <div class="content">
+        <h1 class="main-title">TAFFELO</h1>
+        <div class="social-links">
+            <a href="https://vk.com/taffelo" class="social-link" target="_blank">ВКОНТАКТЕ</a>
+        </div>
+    </div>
+
+    <!-- Оверлей -->
+    <div class="overlay" id="overlay" onclick="closePhotoHost()"></div>
+
+    <!-- Окно фотохостинга -->
+    <div class="photo-host-modal" id="photoHostModal">
+        <div class="modal-header">
+            <h2 class="modal-title">TAFFELO ХОСТ</h2>
+            <button class="close-modal" onclick="closePhotoHost()">×</button>
+        </div>
+        
+        <div class="upload-area" id="uploadArea">
+            <p>Перетащи сюда фото или</p>
+            <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+            <button class="upload-button" onclick="document.getElementById('fileInput').click()">Выбрать файлы</button>
+        </div>
+        
+        <div class="gallery" id="imageGallery">
+            <div class="gallery-item">
+                <p style="opacity: 0.7; font-size: 0.9rem;">Загрузи первое фото</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Дождь
+        function createRain() {
+            const rain = document.getElementById('rain');
+            for (let i = 0; i < 150; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'drop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (0.5 + Math.random() * 1.5) + 's';
+                drop.style.animationDelay = Math.random() * 3 + 's';
+                drop.style.height = (15 + Math.random() * 25) + 'px';
+                rain.appendChild(drop);
+            }
+        }
+
+        // Открыть/закрыть фотохостинг
+        function openPhotoHost() {
+            document.getElementById('photoHostModal').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closePhotoHost() {
+            document.getElementById('photoHostModal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Загрузка файлов
+        document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#666';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#444';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#444';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFileUpload(e) {
+            handleFiles(e.target.files);
+        }
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addImageToGallery(file.name, e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // ПРОСТОЕ ДОБАВЛЕНИЕ КАРТИНКИ
+        function addImageToGallery(filename, imageUrl) {
+            const gallery = document.getElementById('imageGallery');
+            
+            if (gallery.querySelector('p')) {
+                gallery.innerHTML = '';
+            }
+            
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            
+            galleryItem.innerHTML = `
+                <img src="${imageUrl}" alt="${filename}" class="gallery-img">
+                <div class="file-name">${filename}</div>
+                <button class="copy-btn" onclick="copyToClipboard('${imageUrl}')">СКОПИРОВАТЬ ССЫЛКУ</button>
+                <button class="delete-btn" onclick="this.parentElement.remove(); checkEmptyGallery();">УДАЛИТЬ</button>
+            `;
+            
+            gallery.appendChild(galleryItem);
+        }
+
+        // КОПИРОВАНИЕ
+        function copyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('✅ Ссылка скопирована!');
+        }
+
+        // Проверка пустой галереи
+        function checkEmptyGallery() {
+            const gallery = document.getElementById('imageGallery');
+            if (gallery.children.length === 0) {
+                gallery.innerHTML = '<div class="gallery-item"><p style="opacity: 0.7; font-size: 0.9rem;">Загрузи первое фото</p></div>';
+            }
+        }
+
+        // Закрытие по ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePhotoHost();
+        });
+
+        // Запуск
+        createRain();
+    </script>
+</body>
+</html>
