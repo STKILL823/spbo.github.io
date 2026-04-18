@@ -3,59 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY WASTELAND - Main Menu</title>
+    <title>Devast.IO - Post-Apocalyptic Survival</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Viga&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background"></div>
 
     <div class="container">
-        <!-- Левая панель -->
-        <div class="left-panel">
-            <div class="logo-small">MADE BY YOU</div>
-            <div class="social-icons">
-                <a href="#">𝕏</a>
-                <a href="#">f</a>
-                <a href="#">▶</a>
-                <a href="#">♪</a>
-            </div>
-        </div>
-
         <!-- Центральная панель -->
         <div class="main-panel">
-            <h1 class="game-title">WASTELAND<span class="radiation">.IO</span></h1>
-            
-            <div class="input-group">
-                <input type="text" id="nickname" placeholder="ВВЕДИ НИКНЕЙМ" maxlength="16">
+            <div class="logo">
+                <span>DEVAST</span><span class="io">.IO</span>
             </div>
 
-            <div class="mode-select">
-                <button class="mode-btn active" data-mode="survival">SURVIVAL</button>
-                <button class="mode-btn" data-mode="ghoul">GHOUL MODE</button>
-            </div>
+            <input type="text" id="nickname" placeholder="NICKNAME" maxlength="16">
 
-            <button class="play-button" id="playBtn">
-                PLAY
-            </button>
+            <select id="serverSelect">
+                <option value="">Auto Select Server</option>
+                <option value="official">Official Server</option>
+                <option value="community">Community Server</option>
+            </select>
+
+            <button class="play-button" id="playBtn">PLAY</button>
+
+            <div class="modes">
+                <button class="mode-btn active">SURVIVAL</button>
+                <button class="mode-btn">GHOUL MODE</button>
+            </div>
         </div>
 
-        <!-- Правая панель -->
+        <!-- Правая панель - Changelog -->
         <div class="right-panel">
-            <div class="info-box">
-                <h3>HOW TO PLAY</h3>
-                <p>Собирай ресурсы • Крафти • Выживай<br>
-                   Берегись радиации и других игроков!</p>
-            </div>
-
-            <div class="controls">
-                <h3>УПРАВЛЕНИЕ</h3>
-                <div class="keys">
-                    <div>WASD — Двигаться</div>
-                    <div>ЛКМ — Ударить / Взаимодействовать</div>
-                    <div>E — Использовать</div>
-                    <div>C — Крафт</div>
-                    <div>M — Карта</div>
+            <div class="changelog-box">
+                <h2>CHANGELOG</h2>
+                <div class="changelog-content" id="changelogText">
+                    <!-- Сюда вставим текст из твоего HTML -->
                 </div>
+                <a href="#" class="see-more">SEE MORE</a>
+            </div>
+        </div>
+
+        <!-- Левая / нижняя панель - How to Play -->
+        <div class="howtoplay-panel">
+            <h2>HOW TO PLAY?</h2>
+            <p>Eat, warm up, and survive by gathering resources, crafting items and building a shelter.<br>
+               Fight other players, and beware the <span class="highlight">radiation</span>!</p>
+
+            <h3>COMMANDS</h3>
+            <div class="commands">
+                <div><strong>W A S D</strong> — MOVE</div>
+                <div><strong>Mouse Left</strong> — HIT / INTERACT</div>
+                <div><strong>E</strong> — INTERACT</div>
+                <div><strong>C</strong> — CRAFT</div>
+                <div><strong>M</strong> — MAP</div>
+                <div><strong>Shift</strong> — RUN</div>
             </div>
         </div>
     </div>
